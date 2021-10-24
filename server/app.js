@@ -2,16 +2,21 @@ import createError from 'http-errors';
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
-import logger from 'morgan';
+import morgan from 'morgan';
+import winston from 'winston';
 
 import indexRouter from '@s-routes/index';
 import usersRouter from '@s-routes/users';
+
+// Importing configurations
+import configTemplateEngine from '@s-config/template-engine'
 
 // Webpack Modules
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webPackHotMiddleware from 'webpack-hot-middleware';
 import webpackDevConfig from '../webpack.dev.config';
+import { config } from 'process';
 
 // Consultar el modo en que se esta ejecutando la aplicacion
 const env = process.env.NODE_ENV || 'development';
@@ -52,10 +57,9 @@ if (env === 'development') {
 }
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+configTemplateEngine(app);
 
-app.use(logger('dev'));
+app.use(morgan('combined', { stream: winston.stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
