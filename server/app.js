@@ -9,14 +9,13 @@ import winston from '@server/config/winston';
 import router from '@server/routes/index';
 
 // Importing configurations
-import configTemplateEngine from '@s-config/template-engine'
+import configTemplateEngine from '@s-config/template-engine';
 
 // Webpack Modules
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webPackHotMiddleware from 'webpack-hot-middleware';
 import webpackDevConfig from '../webpack.dev.config';
-import { config } from 'process';
 
 // Consultar el modo en que se esta ejecutando la aplicacion
 const env = process.env.NODE_ENV || 'development';
@@ -26,7 +25,7 @@ const app = express();
 
 // Verificando el modo de ejecucion de la aplicacion
 if (env === 'development') {
-  console.log('> Executing in Development Mode: Wepckac Hot Reloading');
+  console.log('> Executing in Development Mode: Webpack Hot Reloading');
   // Paso 1. Agregando la ruta del HMR
   // reload=true: Habilita la recarga del frontend cuando hay cambios en el codigo
   // fuente del frontend
