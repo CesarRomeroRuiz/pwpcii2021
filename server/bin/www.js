@@ -3,6 +3,8 @@ import winston from '@server/config/winston';
 
 // Importando configuraciones de aplicacion
 import configKeys from '@server/config/configKeys';
+// Importando la clase de conexion
+import MongooseODM from '@server/config/odm';
 
 /**
  * Module dependencies.
@@ -10,6 +12,7 @@ import configKeys from '@server/config/configKeys';
 import Debug from 'debug';
 import http from 'http';
 import app from '../app';
+import { mongo } from 'mongoose';
 
 const debug = Debug('projnotes:server');
 
@@ -84,9 +87,29 @@ function onListening() {
 }
 
 /**
- * Listen on provided port, on all network interfaces.
+ * Creando el objeto de conexion
  */
+const mongooseOdm = new MongooseODM(configKeys.databaseUrl);
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+/**
+ * IIFE
+ */
+(
+  async () => {
+    try {
+      const connectionResult = await mongooseOdm.connect();
+      if(connectionResult){
+        winston.info('Connection to database has succesusfuly established');
+        /**
+         * Listen on provided port, on all network interfaces.
+         */
+        server.listen(port);
+        server.on('error', onError);
+        server.on('listening', onListening);
+      }
+    } catch (error) {
+      winston.error(`Error when connecting to Database: ${error.message}`);
+    }
+  }
+)();
+

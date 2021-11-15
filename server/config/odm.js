@@ -1,0 +1,28 @@
+//Importando biblioteca ODM
+import mongoose from 'mongoose';
+import winston from './winston';
+
+class MongooseODM{
+    //Constructor
+    constructor(url){
+        this.url = url;
+    }
+    //Metodo de conexion
+    async connect(){
+        // Sustituyendo el sistema de promesas
+        // de mongoose por el JavaScript
+        mongoose.Promise = global.Promise;
+        winston.info(`Conectando a la base de datos en: ${this.url}`);
+        try {
+            await mongoose.connect(this.url);
+            return true;
+        } catch (error) {
+            winston.error(`Error al conectarse a la base de datos: ${error.message}`
+            );
+            // Se retorna false en caso de que no se realice una conexion exitosa
+            return false;
+        }
+    }
+}
+
+export default MongooseODM;
