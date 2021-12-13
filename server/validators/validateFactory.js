@@ -11,12 +11,12 @@ const Validator =
       const validData = await shape.validate(dataObject, { abortEarly: false });
       // Se inyecta el objeto validado a la peticion
       req.validData = validData;
-      // Se invoca el siguiente middleware a la cadena
-      return next();
     } catch (error) {
       // En caso de error se regresa la info del error
-      return res.status(400).json({ error: error.message });
+      req.errorData = error;
     }
+    // Se invoca el siguiente middleware a la cadena
+    return next();
   };
 
 // exportando el validador
