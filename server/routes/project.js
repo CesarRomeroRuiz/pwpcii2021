@@ -2,8 +2,13 @@
 import { Router } from 'express';
 
 // Importando el controlador de proyectos
-import projectsController from '@server/controllers/projectController'
-import projectController from '../controllers/projectController';
+import projectController from '@server/controllers/projectController';
+
+// Importamos el Validador
+import Validate from '@server/validators/validate';
+
+// Importamos el esquema de validacion de projectos
+import projectValidator from '@server/validators/projects';
 
 // Creando la instancia de un router
 const router = new Router();
@@ -17,6 +22,13 @@ router.get('/add', projectController.add);
 
 // POST "/projects/add"
 // Procesa el formulario
-router.post('/add', projectController.addPost);
+router.post(
+    '/add',
+    Validate({
+        shape: projectValidator.projectSchema,
+        getObject: projectValidator.getProject
+}), 
+projectController.addPost
+);
 
 export default router;
